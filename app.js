@@ -1,6 +1,21 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+//configure mongoose
+mongoose.connect(
+  process.env.MONGODB_URI || "mongodb://localhost/biblioteca",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Connected to MongoDB");
+    }
+  }
+);
 
 app.use(express.json());
 
