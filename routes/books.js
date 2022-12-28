@@ -5,7 +5,7 @@ const {
   _delete,
   _getAll,
   _getById,
-} = require("../controllers");
+} = require("../controllers/crud");
 const UserModel = require("../models/books")
 
 const router = express.Router();
