@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca</title>
+  <style>
+    .list {
+      display: flex;
+      align-items: center;
+    }
+
+    .round {
+      border-radius: 8px;
+      padding: 4px 8px;
+      margin-right: 5px;
+      font-size: .75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-wrapper cyan">
+      <a href="/" class="brand-logo">Biblioteca</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li data-logout><a href="signin.html">Entrar</a></li>
+        <li style="display: none" data-login><a href="#">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row" id="booklist"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+  <script>
+    !(function () {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const id = urlParams.get('id');
+
+      function rentBook (id) {
+        fetch(`http://localhost:3001/api/books/rent/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': JSON.parse(sessionStorage.getItem('userData')).accessToken
+          },
+          body: JSON.stringify({ rented: true, rentDate: new Date() })
+        })
+          .then(res => {
+            if (!res.ok || res.status !== 200) {
+              throw new Error('Something went wrong');
+            }
+            return res.json();
+          })
+          .then(res => {
+            alert('Livro alugado!')
+            window.location.reload();
+          })
+          .catch(err => alert(err))
+      }
+      
+      if (sessionStorage.getItem("userData")) {
+        document.querySelectorAll("[data-login]").forEach(el => el.style.display = 'block')
+        document.querySelectorAll("[data-logout]").forEach(el => el.style.display = 'none')
+      } else {
+        document.querySelectorAll("[data-login]").forEach(el => el.style.display = 'none')
+        document.querySelectorAll("[data-logout]").forEach(el => el.style.display = 'block')
+      }
+
+      fetch(`http://localhost:3001/api/books/id/${id}`, {
+        headers: {
+          'x-access-token': JSON.parse(sessionStorage.getItem('userData')).accessToken
+        }
+      })
+        .then(res => res.json())
+        .then(({ data: { _id, name, ogName, year, quote, categories, rented, rentDate } }) => {
+          booklist.innerHTML = `
+          <div class="col s12">
+            <h2 class="header"><a href="/livro.html?id=${encodeURIComponent(_id)}">${name}</a></h2>
+            <ul class="list">${categories.split(",").map(cat => `<li class="round badge grey">${cat}</li>`).join("")}</ul>
+            <p>${ogName}  (${year})</p>
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <blockquote class="card-content">
+                  <p>${quote}</p>
+                </blockquote>
+                </div>
+                <div class="card-action">
+                  ${rented 
+                    ? `<p>Livro alugado desde ${moment(rentDate).format("LLL")}</p>`
+                    : `<a href="#" data-rent data-id="${_id}" id="rent-${_id}">Alugar</a>`}
+                </div>
+              </div>
+            </div>
+          </div>
+          `
+        }).finally(() => document.querySelector('a[data-rent]').addEventListener("click", (e) => rentBook(e.target.dataset.id)))
+
+        
+    })();
+  </script>
+</body>
+
+</html>

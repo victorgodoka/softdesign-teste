@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 const booksRouter = require("./routes/books");
 const userRouter = require("./routes/user");
 const authRouter = require("./routes/auth");
-const frontRouter = require("./routes/front");
 const db = require("./models");
 const Role = db.role;
 
@@ -69,13 +68,11 @@ app.use(function (req, res, next) {
 app.use("/api/books", booksRouter);
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
-app.use("/", frontRouter);
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
+app.use(express.static(path.join(__dirname, "public")));
 
 module.exports = app;

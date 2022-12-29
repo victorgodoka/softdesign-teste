@@ -7,9 +7,10 @@ const Books = model(
   new Schema({
     name: String,
     ogName: String,
+    quote: String,
     author: String,
     year: Number,
-    categories: [String],
+    categories: String,
     rented: Boolean,
     rentDate: Date,
   })

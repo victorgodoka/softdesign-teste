@@ -39,11 +39,11 @@ Para este projeto, foi usado o Mongo local, configurado como ```mongodb://localh
 
 ### Listagem de Livros
 - [Listar todos](http://localhost:3001/api/books) (GET)
-- [Busca por ID](http://localhost:3001/api/books/search/:id) (GET)
-- [Busca por Nome](http://localhost:3001/api/books/search/:name) (GET)
-- [Criar novo Livro](http://localhost:3001/api/books) (POST)
-- [Atualizar Livro](http://localhost:3001/api/books) (PUT)
-- [Deletar Livro](http://localhost:3001/api/books) (DELETE)
+- [Busca por Nome](http://localhost:3001/api/books/name/:name) (GET)
+- [Busca por ID](http://localhost:3001/api/books/id/:id) (GET)
+- [Criar novo Livro](http://localhost:3001/api/books/) (POST)
+- [Atualizar Livro](http://localhost:3001/api/books/:id) (PUT)
+- [Deletar Livro](http://localhost:3001/api/books/:id) (DELETE)
 
 
 ## ⛏️ Feito com <a name = "built_using"></a>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca</title>
+  <style>
+    .list {
+      display: flex;
+      align-items: center;
+    }
+
+    .round {
+      border-radius: 8px;
+      padding: 4px 8px;
+      margin-right: 5px;
+      font-size: .75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="nav-wrapper cyan">
+      <a href="/" class="brand-logo">Biblioteca</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li data-logout><a href="signin.html">Entrar</a></li>
+        <li style="display: none" data-login><a href="#">Sair</a></li>
+      </ul>
+    </div>
+  </nav>
+  <nav>
+    <div class="nav-wrapper cyan">
+      <form id="search">
+        <div class="input-field">
+          <input id="searchval" type="search" required>
+          <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row" id="booklist"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+  <script>
+    !(function () {
+      const booklist = document.querySelector('#booklist')
+      const search = document.querySelector("#search");
+      const searchval = document.querySelector("#searchval");
+
+      search.addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        fetch(`http://localhost:3001/api/books/name/${encodeURIComponent(searchval.value)}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': JSON.parse(sessionStorage.getItem('userData')).accessToken
+          }
+        })
+          .then(res => {
+            if (!res.ok || res.status !== 200) {
+              throw new Error('Something went wrong');
+            }
+            return res.json();
+          })
+          .then(({ data }) => {
+            if (data.length <= 0) return;
+            booklist.innerHTML = data.map(({ _id, name, ogName, year, quote, categories }, i) => `
+          <div class="col s12 m6">
+            <h2 class="header"><a href="/livro.html?id=${encodeURIComponent(_id)}">${name}</a></h2>
+            <ul class="list">${categories.split(",").map(cat => `<li class="round badge grey">${cat}</li>`).join("")}</ul>
+            <p>${ogName}  (${year})</p>
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <blockquote class="card-content">
+                  <p>${quote}</p>
+                </blockquote>
+                </div>
+                <div class="card-action">
+                  <a href="#">Alugar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          `).join('')
+          })
+          .catch(err => alert(err))
+      });
+
+      if (sessionStorage.getItem("userData")) {
+        document.querySelectorAll("[data-login]").forEach(el => el.style.display = 'block')
+        document.querySelectorAll("[data-logout]").forEach(el => el.style.display = 'none')
+      } else {
+        document.querySelectorAll("[data-login]").forEach(el => el.style.display = 'none')
+        document.querySelectorAll("[data-logout]").forEach(el => el.style.display = 'block')
+      }
+
+      fetch('http://localhost:3001/api/books', {
+        headers: {
+          'x-access-token': JSON.parse(sessionStorage.getItem('userData')).accessToken
+        }
+      })
+        .then(res => res.json())
+        .then(({ data }) => {
+          booklist.innerHTML = data.map(({ _id, name, ogName, year, quote, categories, rented, rentDate }, i) => `
+          <div class="col s12">
+            <h2 class="header"><a href="/livro.html?id=${encodeURIComponent(_id)}">${name}</a></h2>
+            <ul class="list">${categories.split(",").map(cat => `<li class="round badge grey">${cat}</li>`).join("")}</ul>
+            <p>${ogName}  (${year})</p>
+            <div class="card horizontal">
+              <div class="card-stacked">
+                <div class="card-content">
+                  <blockquote class="card-content">
+                  <p>${quote}</p>
+                </blockquote>
+                </div>
+                <div class="card-action">
+                  ${rented
+              ? `<p>Livro alugado desde ${moment(rentDate).format("LLL")}</p>`
+              : `<a href="#" data-rent data-id="${_id}" id="rent-${_id}">Alugar</a>`}
+                </div>
+              </div>
+            </div>
+          </div>
+          `).join('')
+
+          function rentBook(id) {
+            fetch(`http://localhost:3001/api/books/rent/${id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': JSON.parse(sessionStorage.getItem('userData')).accessToken
+              },
+              body: JSON.stringify({ rented: true, rentDate: new Date() })
+            })
+              .then(res => {
+                if (!res.ok || res.status !== 200) {
+                  throw new Error('Something went wrong');
+                }
+                return res.json();
+              })
+              .then(res => {
+                alert('Livro alugado!')
+                window.location.reload();
+              })
+              .catch(err => alert(err))
+          }
+
+          document.querySelector('a[data-rent]').addEventListener("click", (e) => rentBook(e.target.dataset.id))
+        })
+    })();
+  </script>
+</body>
+
+</html>
