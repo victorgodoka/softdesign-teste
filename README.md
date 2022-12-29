@@ -29,6 +29,8 @@ Para instalar as bibliotecas necessárias é importante rodar no terminal
 npm install [ou] yarn install
 ```
 
+Para este projeto, foi usado o Mongo local, configurado como ```mongodb://localhost```
+
 ## 🔗 Endpoints <a name = "endpoints"></a>
 
 ### Autenticação
