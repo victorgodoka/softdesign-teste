@@ -19,13 +19,21 @@ function verifyContent (req, res, next) {
 
 router
   .route("/")
-  .get((req, res) => _getAll(req, res, BooksModel))
-  .post([authJwt.verifyToken, authJwt.isAdmin, verifyContent], (req, res) => _create(req, res, BooksModel))
-  .put([authJwt.verifyToken, authJwt.isAdmin, verifyContent], (req, res) => _update(req, res, BooksModel))
-  .delete([authJwt.verifyToken, authJwt.isAdmin, verifyContent], (req, res) => _delete(req, res, BooksModel));
+  .get([authJwt.verifyToken], (req, res) =>
+    _getAll(req, res, BooksModel)
+  )
+  .post([authJwt.verifyToken, authJwt.isAdmin, verifyContent], (req, res) =>
+    _create(req, res, BooksModel)
+  )
+  .put([authJwt.verifyToken, authJwt.isAdmin, verifyContent], (req, res) =>
+    _update(req, res, BooksModel)
+  )
+  .delete([authJwt.verifyToken, authJwt.isAdmin, verifyContent], (req, res) =>
+    _delete(req, res, BooksModel)
+  );
 
-router.route("/search/:name").get((req, res) => _getByName(req, res, BooksModel));
+router.route("/search/:name").get([authJwt.verifyToken], (req, res) => _getByName(req, res, BooksModel));
 
-router.route("/search/:id").get((req, res) => _getById(req, res, BooksModel));
+router.route("/search/:id").get([authJwt.verifyToken], (req, res) => _getById(req, res, BooksModel));
 
 module.exports = router;
