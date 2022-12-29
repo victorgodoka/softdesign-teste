@@ -55,6 +55,6 @@ npm install [ou] yarn install
 
 ## 🎉 Agradecimentos <a name = "acknowledgement"></a>
 
-- SoftDesign, pela oportunidade
-- <a href=" https://marketplace.visualstudio.com/items?itemName=thomascsd.vscode-readme-pattern">Readme Pattern</a>, plugin de VSCode que me trouxe esse template bonitão
+- [SoftDesign](https://softdesign.com.br/), pela oportunidade
+- [Readme Pattern](https://marketplace.visualstudio.com/items?itemName=thomascsd.vscode-readme-pattern), plugin de VSCode que me trouxe esse template bonitão
 
