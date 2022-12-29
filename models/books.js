@@ -10,6 +10,8 @@ const Books = model(
     author: String,
     year: Number,
     categories: [String],
+    rented: Boolean,
+    rentDate: Date,
   })
 );
 

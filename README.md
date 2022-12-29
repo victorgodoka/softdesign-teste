@@ -29,7 +29,20 @@ Para instalar as bibliotecas necessárias é importante rodar no terminal
 npm install [ou] yarn install
 ```
 
-## ⛏️ WIP ⛏️ 
+## 🔗 Endpoints <a name = "endpoints"></a>
+
+### Autenticação
+- [Cadastro](http://localhost:3001/api/auth/signup) (POST)
+- [Login](http://localhost:3001/api/auth/signin) (POST)
+
+### Listagem de Livros
+- [Listar todos](http://localhost:3001/api/books) (GET)
+- [Busca por ID](http://localhost:3001/api/books/search/:id) (GET)
+- [Busca por Nome](http://localhost:3001/api/books/search/:name) (GET)
+- [Criar novo Livro](http://localhost:3001/api/books) (POST)
+- [Atualizar Livro](http://localhost:3001/api/books) (PUT)
+- [Deletar Livro](http://localhost:3001/api/books) (DELETE)
+
 
 ## ⛏️ Feito com <a name = "built_using"></a>
 
@@ -44,3 +57,4 @@ npm install [ou] yarn install
 
 - SoftDesign, pela oportunidade
 - <a href=" https://marketplace.visualstudio.com/items?itemName=thomascsd.vscode-readme-pattern">Readme Pattern</a>, plugin de VSCode que me trouxe esse template bonitão
+

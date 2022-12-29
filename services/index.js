@@ -5,8 +5,13 @@ exports.getAll = async (model) => {
 exports.create = async (model, value) => {
   return await model.create(value);
 };
+
 exports.getById = async (model, id) => {
   return await model.findById(id);
+};
+
+exports.getByName = async (model, string) => {
+  return await model.find({ name: new RegExp(string, "i") });
 };
 
 exports.update = async (model, id, value) => {

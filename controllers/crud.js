@@ -27,6 +27,15 @@ exports._getById = async (req, res, model) => {
   }
 };
 
+exports._getByName = async (req, res, model) => {
+  try {
+    const value = await Services.getByName(model, req.params.name);
+    res.json({ data: value, status: "success" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports._update = async (req, res, model) => {
   try {
     const value = await Services.update(model, req.params.id, req.body);
